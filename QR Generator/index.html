@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+
+    <h1>QR Generator</h1>
+
+    <input type="text" id="input" placeholder="Enter Name or Url Here" onkeypress="noError()">
+
+    <button id="btn" onclick="generate()" >Generate QR</button>
+
+    <h3>QR CODE</h3>
+
+    <img src="" alt="No Connection" id="qr-image">
+
+    <button id="print-btn" onClick="downloadQR('qr-image');">Download QR</button>
+
+ </div>
+
+    <script>
+
+      let input = document.getElementById("input") ;
+      let button = document.getElementById("btn") ;
+      let image = document.getElementById("qr-image");
+
+
+      function generate() {
+
+        if (input.value.length > 0) {
+              image.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + input.value ;
+              image.style.display = "block"
+        }
+
+        else{
+          input.style.border = "5px solid red";
+          input.classList.add('error');
+        }
+
+      }
+
+      function noError() {
+        input.style.border = "5px solid seagreen";
+      }
+
+/*---------------------------------------------Function to  Download QR---------------------------------------------*/
+
+function downloadQR(id) {
+
+  if (input.value.length > 0) {
+            let img = document.getElementById(id);
+        if (img && img.src) {
+          fetch(img.src)
+            .then(response => response.blob())
+            .then(blob => {
+              let link = document.createElement('a');
+              link.href = URL.createObjectURL(blob);
+              link.download = 'qr-code.png';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            })
+            .catch(() => alert('Failed to download QR Code'));
+        } else {
+          alert('No QR Code to download');
+        }
+      }
+  }
+
+
+    </script>
+</body>
+</html>
